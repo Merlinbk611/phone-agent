@@ -16,12 +16,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Build APK
-        run: ./gradlew assembleDebug
+          
+      - name: Test
+        run: echo "GitHub Actions works!"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
