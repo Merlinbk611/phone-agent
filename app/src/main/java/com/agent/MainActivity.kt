@@ -1,13 +1,13 @@
 package com.agent
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : Activity() {
 
     lateinit var textView: TextView
 
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         textView = TextView(this)
-        textView.text = "Starting..."
+        textView.text = "STARTING"
 
         setContentView(textView)
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onMessage(message: String?) {
                     runOnUiThread {
-                        textView.text = "MSG: $message"
+                        textView.text = message
                     }
                 }
 
