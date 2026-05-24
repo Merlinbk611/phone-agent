@@ -24,7 +24,7 @@ class WebSocketService : Service() {
         startId: Int
     ): Int {
 
-        startForegroundService()
+        // startForegroundService()
 
         connectWebSocket()
 
