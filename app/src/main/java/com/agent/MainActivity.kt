@@ -15,8 +15,6 @@ class MainActivity : Activity() {
 
         setContentView(text)
 
-        startService(
-            Intent(this, WebSocketService::class.java)
-        )
+    
     }
 }
