@@ -6,6 +6,10 @@ import android.widget.TextView
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import org.json.JSONObject
 
 class MainActivity : Activity() {
 
@@ -34,10 +38,42 @@ class MainActivity : Activity() {
                 }
 
                 override fun onMessage(message: String?) {
-                    runOnUiThread {
-                        textView.text = message
-                    }
-                }
+
+    runOnUiThread {
+        textView.text = message
+    }
+
+    try {
+
+        val json = JSONObject(message!!)
+        val type = json.getString("type")
+
+        if (type == "battery") {
+
+            val batteryStatus = registerReceiver(
+                null,
+                IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            )
+
+            val level = batteryStatus?.getIntExtra(
+                BatteryManager.EXTRA_LEVEL,
+                -1
+            )
+
+            val response = JSONObject()
+            response.put("type", "battery")
+            response.put("value", level)
+
+            send(response.toString())
+        }
+
+    } catch (e: Exception) {
+
+        runOnUiThread {
+            textView.text = "JSON ERROR"
+        }
+    }
+}
 
                 override fun onClose(code: Int, reason: String?, remote: Boolean) {
                     runOnUiThread {
