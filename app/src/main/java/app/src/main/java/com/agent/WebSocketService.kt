@@ -13,6 +13,10 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
+import android.os.Vibrator
+import android.os.VibrationEffect
+import android.content.Context
+import android.hardware.camera2.CameraManager
 
 class WebSocketService : Service() {
 
@@ -46,35 +50,69 @@ class WebSocketService : Service() {
 
             override fun onMessage(message: String?) {
 
-                try {
+    try {
 
-                    val json = JSONObject(message!!)
-                    val type = json.getString("type")
+        val json = JSONObject(message!!)
+        val type = json.getString("type")
 
-                    if (type == "battery") {
+        when(type) {
 
-                        val batteryStatus = registerReceiver(
-                            null,
-                            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                        )
+            "battery" -> {
 
-                        val level = batteryStatus?.getIntExtra(
-                            BatteryManager.EXTRA_LEVEL,
-                            -1
-                        )
+                val batteryStatus = registerReceiver(
+                    null,
+                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                )
 
-                        val response = JSONObject()
-                        response.put("type", "battery")
-                        response.put("value", level)
+                val level = batteryStatus?.getIntExtra(
+                    BatteryManager.EXTRA_LEVEL,
+                    -1
+                )
 
-                        send(response.toString())
-                    }
+                val response = JSONObject()
+                response.put("type", "battery")
+                response.put("value", level)
 
-                } catch (e: Exception) {
-
-                    println(e.message)
-                }
+                send(response.toString())
             }
+
+            "vibrate" -> {
+
+                val vibrator = getSystemService(
+                    Context.VIBRATOR_SERVICE
+                ) as Vibrator
+
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        1000,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            }
+
+            "flash" -> {
+
+                val cameraManager = getSystemService(
+                    CAMERA_SERVICE
+                ) as CameraManager
+
+                val cameraId = cameraManager.cameraIdList[0]
+
+                cameraManager.setTorchMode(cameraId, true)
+
+                Thread {
+                    Thread.sleep(3000)
+
+                    cameraManager.setTorchMode(cameraId, false)
+                }.start()
+            }
+        }
+
+    } catch (e: Exception) {
+
+        println(e.message)
+    }
+}
 
             override fun onClose(
                 code: Int,
