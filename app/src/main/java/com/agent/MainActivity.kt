@@ -15,41 +15,48 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         textView = TextView(this)
-        textView.text = "Connecting..."
+        textView.text = "Starting..."
 
         setContentView(textView)
 
-        val serverIp = "109.248.11.133"
+        try {
 
-        val ws = object : WebSocketClient(
-            URI("ws://$serverIp:8000/ws/android1")
-        ) {
+            val serverIp = "109.248.11.133"
 
-            override fun onOpen(handshakedata: ServerHandshake?) {
-                runOnUiThread {
-                    textView.text = "Connected!"
+            val ws = object : WebSocketClient(
+                URI("ws://$serverIp:8000/ws/android1")
+            ) {
+
+                override fun onOpen(handshakedata: ServerHandshake?) {
+                    runOnUiThread {
+                        textView.text = "CONNECTED"
+                    }
+                }
+
+                override fun onMessage(message: String?) {
+                    runOnUiThread {
+                        textView.text = "MSG: $message"
+                    }
+                }
+
+                override fun onClose(code: Int, reason: String?, remote: Boolean) {
+                    runOnUiThread {
+                        textView.text = "CLOSED"
+                    }
+                }
+
+                override fun onError(ex: Exception?) {
+                    runOnUiThread {
+                        textView.text = "ERROR: ${ex?.message}"
+                    }
                 }
             }
 
-            override fun onMessage(message: String?) {
-                runOnUiThread {
-                    textView.text = "CMD: $message"
-                }
-            }
+            ws.connect()
 
-            override fun onClose(code: Int, reason: String?, remote: Boolean) {
-                runOnUiThread {
-                    textView.text = "Disconnected"
-                }
-            }
+        } catch (e: Exception) {
 
-            override fun onError(ex: Exception?) {
-                runOnUiThread {
-                    textView.text = "ERROR"
-                }
-            }
+            textView.text = "CRASH: ${e.message}"
         }
-
-        ws.connect()
     }
 }
