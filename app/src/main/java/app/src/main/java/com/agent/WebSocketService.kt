@@ -46,6 +46,11 @@ class WebSocketService : Service() {
             override fun onOpen(handshakedata: ServerHandshake?) {
 
                 println("CONNECTED")
+                val hello = JSONObject()
+                hello.put("type", "hello")
+                hello.put("device", "android1")
+
+                send(hello.toString())
             }
 
             override fun onMessage(message: String?) {
@@ -132,14 +137,34 @@ class WebSocketService : Service() {
         ws.connect()
     }
 
-    private fun reconnect() {
+    private var reconnecting = false
 
-        Thread {
-            Thread.sleep(5000)
+private fun reconnect() {
 
-            connectWebSocket()
-        }.start()
-    }
+    if (reconnecting) return
+
+    reconnecting = true
+
+    Thread {
+
+        while (!ws.isOpen) {
+
+            try {
+
+                Thread.sleep(5000)
+
+                connectWebSocket()
+
+            } catch (e: Exception) {
+
+                println(e.message)
+            }
+        }
+
+        reconnecting = false
+
+    }.start()
+}
 
     private fun startForegroundService() {
 
