@@ -123,9 +123,10 @@ class WebSocketService : Service() {
         }
 
         val notification = Notification.Builder(this, channelId)
-            .setContentTitle("Phone Agent")
-            .setContentText("Connected")
-            .build()
+    .setContentTitle("Phone Agent")
+    .setContentText("Connected")
+    .setSmallIcon(android.R.drawable.stat_notify_sync)
+    .build()
 
         startForeground(1, notification)
     }
