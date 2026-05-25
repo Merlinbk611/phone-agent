@@ -1,5 +1,6 @@
 package com.agent
 
+import androidx.core.app.NotificationCompat
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -31,7 +32,7 @@ class WebSocketService : Service() {
         startId: Int
     ): Int {
 
-       // startAgentForeground()
+        startAgentForeground()
 
         connectWebSocket()
 
@@ -198,31 +199,35 @@ private fun reconnect() {
 
     private fun startAgentForeground() {
 
-        val channelId = "agent_service"
+    val channelId = "agent_service"
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val channel = NotificationChannel(
-                channelId,
-                "Agent Service",
-                NotificationManager.IMPORTANCE_LOW
-            )
+        val channel = NotificationChannel(
+            channelId,
+            "Agent Service",
+            NotificationManager.IMPORTANCE_LOW
+        )
 
-            val manager = getSystemService(
-                NotificationManager::class.java
-            )
+        val manager = getSystemService(
+            NotificationManager::class.java
+        )
 
-            manager.createNotificationChannel(channel)
-        }
-
-        val notification = Notification.Builder(this, channelId)
-    .setContentTitle("Phone Agent")
-    .setContentText("Connected")
-    .setSmallIcon(android.R.drawable.stat_notify_sync)
-    .build()
-
-        startForeground(1, notification)
+        manager.createNotificationChannel(channel)
     }
+
+    val notification = NotificationCompat.Builder(
+        this,
+        channelId
+    )
+        .setContentTitle("Phone Agent")
+        .setContentText("Running in background")
+        .setSmallIcon(android.R.drawable.stat_notify_sync)
+        .setOngoing(true)
+        .build()
+
+    startForeground(1, notification)
+}
 
     override fun onBind(intent: Intent?): IBinder? = null
 }
