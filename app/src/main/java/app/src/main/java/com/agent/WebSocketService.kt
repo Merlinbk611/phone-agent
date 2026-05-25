@@ -64,6 +64,33 @@ class WebSocketService : Service() {
         val type = json.getString("type")
 
         when(type) {
+         
+
+            "ring" -> {
+
+    val audioManager = getSystemService(
+        AUDIO_SERVICE
+    ) as AudioManager
+
+    audioManager.setStreamVolume(
+        AudioManager.STREAM_RING,
+        audioManager.getStreamMaxVolume(
+            AudioManager.STREAM_RING
+        ),
+        0
+    )
+
+    val notification = RingtoneManager.getDefaultUri(
+        RingtoneManager.TYPE_RINGTONE
+    )
+
+    val ringtone = RingtoneManager.getRingtone(
+        applicationContext,
+        notification
+    )
+
+    ringtone.play()
+}
 
             "battery" -> {
 
