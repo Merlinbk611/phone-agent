@@ -31,7 +31,7 @@ class WebSocketService : Service() {
         startId: Int
     ): Int {
 
-        startForegroundService()
+        startAgentForeground()
 
         connectWebSocket()
 
@@ -196,7 +196,7 @@ private fun reconnect() {
     }.start()
 }
 
-    private fun startForegroundService() {
+    private fun startAgentForeground() {
 
         val channelId = "agent_service"
 
