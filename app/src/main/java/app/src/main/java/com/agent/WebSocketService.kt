@@ -17,6 +17,9 @@ import android.os.Vibrator
 import android.os.VibrationEffect
 import android.content.Context
 import android.hardware.camera2.CameraManager
+import android.media.AudioManager
+import android.media.RingtoneManager
+
 
 class WebSocketService : Service() {
 
