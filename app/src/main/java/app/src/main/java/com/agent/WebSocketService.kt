@@ -31,7 +31,7 @@ class WebSocketService : Service() {
         startId: Int
     ): Int {
 
-        startAgentForeground()
+       // startAgentForeground()
 
         connectWebSocket()
 
