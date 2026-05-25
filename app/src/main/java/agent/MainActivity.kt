@@ -23,18 +23,20 @@ class MainActivity : Activity() {
 
         button.setOnClickListener {
 
-            try {
+         try {
 
-                startService(
-                    Intent(this, WebSocketService::class.java)
-                )
+        androidx.core.content.ContextCompat.startForegroundService(
+            this,
+            Intent(this, WebSocketService::class.java)
+        )
 
-                status.text = "SERVICE STARTED"
+        status.text = "SERVICE STARTED"
 
-            } catch (e: Exception) {
+    } catch (e: Exception) {
 
-                status.text = "ERROR: ${e.message}"
-            }
+        status.text = "ERROR: ${e.message}"
+    }
+}
         }
 
         layout.addView(status)
